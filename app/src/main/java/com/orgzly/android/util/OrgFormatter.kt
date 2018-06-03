@@ -1,12 +1,15 @@
 package com.orgzly.android.util
 
 import android.content.Context
+import android.graphics.Color
 import android.graphics.Typeface
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.Spanned
+import android.text.TextPaint
 import android.text.style.*
 import android.view.View
+import android.widget.Toast
 import com.orgzly.BuildConfig
 import com.orgzly.android.prefs.AppPreferences
 import com.orgzly.android.ui.views.TextViewWithMarkup
@@ -62,6 +65,8 @@ object OrgFormatter {
     private fun namelessBracketLinkPattern(str: String) = Pattern.compile("\\[\\[$str]]")
     private fun namedBracketLinkPattern(str: String) = Pattern.compile("\\[\\[$str]\\[([^]]+)]]")
 
+    private val CHECKBOXES_PATTERN = Pattern.compile("""^\s*-\s+(\[[ X]])""", Pattern.MULTILINE)
+
     private const val FLAGS = Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
 
     data class SpanRegion(val start: Int, val end: Int, val content: CharSequence, val spans: List<Any?> = listOf())
@@ -75,7 +80,7 @@ object OrgFormatter {
     }
 
     @JvmOverloads
-    fun parse(str: String, context: Context? = null, linkify: Boolean = true): SpannableStringBuilder {
+    fun parse(str: CharSequence, context: Context? = null, linkify: Boolean = true): SpannableStringBuilder {
         val config = if (context == null) {
             Config(linkify = linkify)
         } else {
@@ -85,7 +90,9 @@ object OrgFormatter {
         return this.parse(str, config)
     }
 
-    fun parse(str: String, config: Config): SpannableStringBuilder {
+    private fun parse(str: CharSequence, config: Config): SpannableStringBuilder {
+        if (BuildConfig.LOG_DEBUG) LogUtils.d(TAG, "Text is", str.javaClass.name, str.javaClass.kotlin )
+
         var ssb = SpannableStringBuilder(str)
 
         ssb = parsePropertyLinks(ssb, CUSTOM_ID_LINK, "CUSTOM_ID", config.linkify)
@@ -101,6 +108,8 @@ object OrgFormatter {
         ssb = parseMarkup(ssb, config)
 
         ssb = parseDrawers(ssb, config.foldDrawers)
+
+        parseCheckboxes(ssb)
 
         return ssb
     }
@@ -401,6 +410,40 @@ object OrgFormatter {
         val to = if (toState.isNullOrEmpty()) "" else toState
 
         return String.format("- State %-12s from %-12s %s", "\"$to\"", "\"$from\"", time)
+    }
+
+    class CheckboxSpan(private val start: Int, private val isChecked: Boolean) : ClickableSpan() {
+        override fun onClick(view: View) {
+            Toast.makeText(view.context, "Click on checkbox, start $start", Toast.LENGTH_SHORT).show()
+
+            val textView = view as TextViewWithMarkup
+
+            textView.setRawText(textView.text.replaceRange(start, start + 3, if (isChecked) "[ ]" else "[X]"))
+        }
+
+        override fun updateDrawState(ds: TextPaint) {
+            // Do not color the text
+            ds.isUnderlineText = true
+        }
+    }
+
+    private fun parseCheckboxes(ssb: SpannableStringBuilder) {
+        val m = CHECKBOXES_PATTERN.matcher(ssb)
+
+        if (BuildConfig.LOG_DEBUG) LogUtils.d(TAG, CHECKBOXES_PATTERN, ssb)
+
+        while (m.find()) {
+            val start = m.start(1)
+            val end = m.end(1)
+
+            val isChecked = m.group(1) != "[ ]"
+
+            if (BuildConfig.LOG_DEBUG) LogUtils.d(TAG, isChecked, m.group(1))
+
+            ssb.setSpan(CheckboxSpan(start, isChecked), start, end, FLAGS)
+            ssb.setSpan(TypefaceSpan("monospace"), start, end, FLAGS)
+            ssb.setSpan(StyleSpan(Typeface.BOLD), start, end, FLAGS)
+        }
     }
 
     private val TAG = OrgFormatter::class.java.name

@@ -26,8 +26,9 @@ public class ViewHolder /* extends RecyclerView.ViewHolder */ {
     public ViewGroup bulletContainer;
     public ImageView bullet;
 
-    public TextView title;
     public View payload;
+
+    public TextView title;
 
     public View scheduled;
     public TextView scheduledText;

@@ -46,6 +46,9 @@ class ActionService : JobIntentService() {
                                 intent.getStringExtra(AppIntent.EXTRA_PROPERTY_VALUE))
                 }
 
+            AppIntent.ACTION_UPDATE_NOTE -> {
+                // TODO: Serialize note to JSON eventually, just pass content as an extra for now
+            }
         }
     }
 
@@ -122,6 +125,5 @@ class ActionService : JobIntentService() {
                     App.ACTION_SERVICE_JOB_ID,
                     intent)
         }
-
     }
 }

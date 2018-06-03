@@ -16,6 +16,8 @@ import com.orgzly.android.util.OrgFormatter
 
 /**
  * [TextView] with markup support.
+ *
+ * Used for title, content and preface text.
  */
 class TextViewWithMarkup : TextViewFixed {
     constructor(context: Context) : super(context)
@@ -28,7 +30,7 @@ class TextViewWithMarkup : TextViewFixed {
 
     fun setRawText(text: CharSequence) {
         rawText = text
-        setText(OrgFormatter.parse(text.toString(), context))
+        setText(OrgFormatter.parse(text, context))
     }
 
     fun openNoteWithProperty(name: String, value: String) {

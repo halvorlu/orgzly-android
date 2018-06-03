@@ -48,7 +48,6 @@ import com.orgzly.android.ui.views.GesturedListView;
 import com.orgzly.android.ui.views.TextViewWithMarkup;
 import com.orgzly.android.util.LogUtils;
 import com.orgzly.android.util.MiscUtils;
-import com.orgzly.org.datetime.OrgDateTime;
 
 import java.util.Collections;
 import java.util.Set;

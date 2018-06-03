@@ -307,20 +307,21 @@ public class NoteFragment extends Fragment
 
         bodyView = top.findViewById(R.id.body_view);
 
-//        bodyView.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                editMode(true, true);
-//                return false;
-//            }
-//        });
+        /* Text view can change too, for example by toggling checkboxes. Keep edit view updated. */
+        bodyView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
-//        bodyView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                editMode(true, true);
-//            }
-//        });
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                bodyEdit.setText(s);
+            }
+        });
 
         if (getActivity() != null && AppPreferences.isFontMonospaced(getContext())) {
             bodyEdit.setTypeface(Typeface.MONOSPACE);
