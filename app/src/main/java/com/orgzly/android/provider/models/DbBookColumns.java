@@ -3,6 +3,7 @@ package com.orgzly.android.provider.models;
 public interface DbBookColumns {
     String NAME = "name";
     String TITLE = "title";
+    String FILE_TAGS = "file_tags";
     String IS_INDENTED = "is_indented";
     String MTIME = "mtime";
     String IS_DUMMY = "is_dummy";

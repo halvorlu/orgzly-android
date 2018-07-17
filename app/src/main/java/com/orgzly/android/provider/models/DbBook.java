@@ -13,6 +13,7 @@ public class DbBook implements DbBookColumns, BaseColumns {
             _ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             NAME + " UNIQUE," +
             TITLE + " TEXT," +
+            FILE_TAGS + " TEXT," +
             MTIME + " INTEGER," +
             IS_DUMMY + " INTEGER DEFAULT 0," +
             IS_DELETED + " INTEGER DEFAULT 0," +
