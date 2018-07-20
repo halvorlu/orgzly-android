@@ -26,7 +26,7 @@ public class DbNoteView implements DbNoteViewColumns, DbNoteColumns, BaseColumns
             "SELECT " + DbNote.TABLE + ".*, " +
 
             "group_concat(t_notes_with_inherited_tags." + DbNote.TAGS + ",' ') AS " + INHERITED_TAGS + ", " +
-
+            "group_concat(t_book_tags." + DbNote.TAGS + ",' ') AS " + BOOK_TAGS + ", " +
             "t_scheduled_range." + DbOrgRange.STRING + " AS " + SCHEDULED_RANGE_STRING + ", " +
             "t_scheduled_timestamps_start." + DbOrgTimestamp.STRING + " AS " + SCHEDULED_TIME_STRING + ", " +
             "t_scheduled_timestamps_end." + DbOrgTimestamp.STRING + " AS " + SCHEDULED_TIME_END_STRING + ", " +
@@ -73,6 +73,7 @@ public class DbNoteView implements DbNoteViewColumns, DbNoteColumns, BaseColumns
             GenericDatabaseUtils.join(DbOrgTimestamp.TABLE, "t_clock_timestamps_end", DbOrgTimestamp._ID, "t_clock_range", DbOrgRange.END_TIMESTAMP_ID) +
 
             GenericDatabaseUtils.join(DbBook.TABLE, "t_books", DbBook._ID, DbNote.TABLE, DbNote.BOOK_ID) +
+            GenericDatabaseUtils.join(DbBook.TABLE, "t_book_tags", DbBook._ID, DbNote.TABLE, DbNote.BOOK_ID) +
 
             GenericDatabaseUtils.join(DbNoteAncestor.TABLE, "t_note_ancestors", DbNoteAncestor.NOTE_ID, DbNote.TABLE, DbNote._ID) +
             GenericDatabaseUtils.join(DbNote.TABLE, "t_notes_with_inherited_tags", DbNote._ID, "t_note_ancestors", DbNoteAncestor.ANCESTOR_NOTE_ID) +

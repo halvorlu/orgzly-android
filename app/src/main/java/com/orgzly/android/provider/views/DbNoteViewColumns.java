@@ -4,6 +4,7 @@ public interface DbNoteViewColumns {
     String BOOK_NAME = "book_name";
 
     String INHERITED_TAGS = "inherited_tags";
+    String BOOK_TAGS = "book_tags";
 
     String SCHEDULED_RANGE_STRING = "scheduled_range_string"; // rename to just scheduled string
     String SCHEDULED_TIME_STRING = "scheduled_time_string";
